@@ -26,8 +26,14 @@
             border-radius: 16px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             padding: 40px;
-            max-width: 500px;
-            width: 100%;
+
+            /* shrink to fit content but never overflow viewport */
+            display: inline-block; /* shrink-to-content */
+            width: auto;
+            max-width: 90vw;       /* keep safe margin from viewport */
+            min-width: 320px;      /* ensure inputs/buttons remain usable */
+
+            transition: width 200ms ease;
         }
 
         h1 {
@@ -179,6 +185,12 @@
         const generateBtn = document.getElementById('generateBtn');
         const downloadBtn = document.getElementById('downloadBtn');
         const qrcodeContainer = document.getElementById('qrcode');
+        const container = document.querySelector('.container');
+        
+        // Layout constants (must match CSS values)
+        const QRCODE_PADDING = 20;      // #qrcode padding: 10px each side
+        const CONTAINER_PADDING = 80;   // .container padding: 40px each side
+        const MIN_CONTAINER_WIDTH = 320; // matches CSS min-width
         
         let qrcode = null;
 
@@ -208,6 +220,10 @@
                 colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.H
             });
+
+            // Adjust container width to fit QR code
+            const newWidth = validSize + QRCODE_PADDING + CONTAINER_PADDING;
+            container.style.width = Math.max(newWidth, MIN_CONTAINER_WIDTH) + 'px';
 
             // Show download button
             downloadBtn.classList.add('visible');
